@@ -1,0 +1,27 @@
+CREATE TABLE #Tenants(
+	[ID] INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	[Name] VARCHAR(50)
+)
+INSERT #Tenants
+SELECT 'Tenant1' UNION
+SELECT 'Tenant2' UNION
+SELECT 'Tenant3'
+CREATE TABLE #Apartments (
+	[ID] INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	[TenantID] INT FOREIGN KEY REFERENCES #Tenants(ID),
+	[Address] VARCHAR(70)
+)
+INSERT #Apartments
+SELECT 1, '45 Texas' UNION
+SELECT 2, '51 Strathaven' UNION
+SELECT 1, '88 Bretton' UNION
+SELECT 1, '9 Maisen'
+
+SELECT	MAX(T.[Name]) AS [Tenant]
+FROM	#Tenants AS T
+        INNER JOIN #Apartments AS A ON T.ID = A.TenantID
+GROUP BY T.ID
+HAVING	COUNT(T.[ID]) > 1
+
+DROP TABLE #Tenants
+DROP TABLE #Apartments
